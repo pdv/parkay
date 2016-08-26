@@ -1,8 +1,11 @@
 'use strict'
 
-let canvas = document.getElementById('canvas')
-let slider = document.getElementById('slider')
+let $ = (id) => document.getElementById(id)
+
+let canvas = $('canvas')
 let wigglerElem = document.getElementById('wiggler')
+let wigglerRate = document.getElementById('rate')
+
 let ctx = canvas.getContext('2d')
 const cw = canvas.width
 const ch = canvas.height
@@ -85,8 +88,11 @@ function draw() {
     for (let s = 0; s < edges.length; s++) {
         for (let t = 0; t < edges[s].length; t++) {
             edges[s][t].map(([p1, p2]) => {
-                const wigglerScalar = wigglerElem.checked ? Math.sin((wiggler - s/2 - t/2) / 10) : 1
-                const scale = wigglerScalar * slider.value
+                const srate = s / $('xrate').value
+                const trate = t / $('yrate').value
+                const wigVal = (wiggler - srate - trate) / -$('rate').value
+                const wigglerScalar = $('wiggler').checked ? Math.sin(wigVal) : 1
+                const scale = wigglerScalar * $('slider').value
                 drawEdge(p1, p2, s, t, scale)
             })
         }
