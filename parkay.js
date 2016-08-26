@@ -82,8 +82,6 @@ let wiggler = 0
 
 function draw() {
     wiggler++
-    // let wigglerScalar = wigglerElem.checked ? Math.sin(wiggler / 10) : 1
-    // let scale = wigglerScalar * slider.value
     ctx.clearRect(0, 0, cw, ch)
     for (let s = 0; s < edges.length; s++) {
         for (let t = 0; t < edges[s].length; t++) {
