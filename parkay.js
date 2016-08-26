@@ -56,6 +56,10 @@ function drawEdge(p1, p2, s, t, scale) {
     const q3 = midpoint(midpoint, p2)
     const isVertical = p1.x == p2.x
 
+    const green = Math.floor(5.1 * s * Math.abs(scale))
+    const blue = Math.floor(5.1 * t * Math.abs(scale))
+    ctx.strokeStyle = 'rgb(0,' + green + ',' + blue + ')'
+
     ctx.beginPath()
     ctx.moveTo(p1.x, p1.y)
 
