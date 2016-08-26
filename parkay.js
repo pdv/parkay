@@ -2,31 +2,31 @@
 
 let canvas = document.getElementById('canvas')
 let slider = document.getElementById('slider')
+let wigglerElem = document.getElementById('wiggler')
 let ctx = canvas.getContext('2d')
 const cw = canvas.width
 const ch = canvas.height
 const wh = 20
 const edges = createEdges()
 
-/**
- * Returns a list of the edges in each generation
- */
+
 function createEdges() {
     let edges = []
     const gw = cw / wh
     const gh = ch / wh
 
-    for (let i = 0; i < gw; i++) {
-        edges[i] = Array()
-        for (let j = 0; j < gh; j++) {
-            const vertex = { x: i * wh, y: j * wh }
-            if (i < gw - 1) {
-                const right = { x: (i+1) * wh, y: j * wh }
-                edges[i].push([vertex, right])
+    for (let s = 0; s < gw; s++) {
+        edges[s] = Array()
+        for (let t = 0; t < gh; t++) {
+            edges[s][t] = Array()
+            const vertex = { x: s * wh, y: t * wh }
+            if (s < gw - 1) {
+                const right = { x: (s+1) * wh, y: t * wh }
+                edges[s][t].push([vertex, right])
             }
-            if (j < gh - 1) {
-                const below = { x: i * wh, y: (j+1) * wh }
-                edges[i].push([vertex, below])
+            if (t < gh - 1) {
+                const below = { x: s * wh, y: (t+1) * wh }
+                edges[s][t].push([vertex, below])
             }
         }
     }
@@ -35,32 +35,55 @@ function createEdges() {
 }
 
 
-function offsetMidpoint(p1, p2, offset) {
-    let isVertical = p1.x == p2.x
+function midpoint(p1, p2) {
     return {
-        x: (p1.x + p2.x) / 2 + (isVertical * offset),
-        y: (p1.y + p2.y) / 2 + (!isVertical * offset)
+        x: (p1.x + p2.x) / 2,
+        y: (p1.y + p2.y) / 2
+    }
+}
+
+function translate(p, dx, dy) {
+    return {
+        x: p.x + dx,
+        y: p.y + dy
     }
 }
 
 
-function drawEdge(p1, p2, t) {
-    const mid = offsetMidpoint(p1, p2, 0)
-    const cp1 = offsetMidpoint(p1, mid, t * slider.value)
-    const cp2 = offsetMidpoint(mid, p2, -1 * t * slider.value)
+function drawEdge(p1, p2, s, t, scale) {
+    const mid = midpoint(p1, p2)
+    const q1 = midpoint(p1, midpoint)
+    const q3 = midpoint(midpoint, p2)
+    const isVertical = p1.x == p2.x
+
     ctx.beginPath()
     ctx.moveTo(p1.x, p1.y)
-    ctx.lineTo(cp1.x, cp1.y)
-    ctx.lineTo(cp2.x, cp2.y)
+
+    if (!isVertical) {
+        const dy = t % 2 ? s : -s
+        const offsetMid = translate(mid, 0, dy * scale)
+        ctx.lineTo(offsetMid.x, offsetMid.y)
+    } else {
+        const dx = s % 2 ? t : -t
+        const offsetMid = translate(mid, dx * scale, 0)
+        ctx.lineTo(offsetMid.x, offsetMid.y)
+    }
+
     ctx.lineTo(p2.x, p2.y)
     ctx.stroke()
 }
 
+let wiggler = 0
 
 function draw() {
+    wiggler++
+    let wigglerScalar = wigglerElem.checked ? Math.sin(wiggler / 10) : 1
+    let scale = wigglerScalar * slider.value
     ctx.clearRect(0, 0, cw, ch)
-    for (let t = 0; t < edges.length; t++) {
-        edges[t].map(([p1, p2]) => drawEdge(p1, p2, t))
+    for (let s = 0; s < edges.length; s++) {
+        for (let t = 0; t < edges[s].length; t++) {
+            edges[s][t].map(([p1, p2]) => drawEdge(p1, p2, s, t, scale))
+        }
     }
     window.requestAnimationFrame(draw)
 }
