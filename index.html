@@ -1,12 +1,25 @@
 <html>
   <head>
     <title>Parkay</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
 
   <body>
-    <canvas id="canvas" width="1000" height="1000"></canvas>
-    <input id="slider" type="range" min="0" max="10" value="0" step="0.01" />
-    <input id="wiggler" type="checkbox" />
+    <div id="container">
+      <div id="content">
+        <div id="controls">
+          <h1>parkay</h1>
+          <p>Scale</p>
+          <input id="slider" type="range" min="0" max="10" value="0" step="0.01" />
+          <p>
+            Wiggler
+            <input id="wiggler" type="checkbox" />
+          </p>
+        </div>
+        <canvas id="canvas" width="1000" height="1000"></canvas>
+      </div>
+    </div>
+
     <script src="parkay.js"></script>
   </body>
 </html>

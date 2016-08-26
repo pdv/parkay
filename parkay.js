@@ -14,7 +14,6 @@ function createEdges() {
     let edges = []
     const gw = cw / wh
     const gh = ch / wh
-
     for (let s = 0; s < gw; s++) {
         edges[s] = Array()
         for (let t = 0; t < gh; t++) {
@@ -30,7 +29,6 @@ function createEdges() {
             }
         }
     }
-
     return edges
 }
 
@@ -81,12 +79,16 @@ let wiggler = 0
 
 function draw() {
     wiggler++
-    let wigglerScalar = wigglerElem.checked ? Math.sin(wiggler / 10) : 1
-    let scale = wigglerScalar * slider.value
+    // let wigglerScalar = wigglerElem.checked ? Math.sin(wiggler / 10) : 1
+    // let scale = wigglerScalar * slider.value
     ctx.clearRect(0, 0, cw, ch)
     for (let s = 0; s < edges.length; s++) {
         for (let t = 0; t < edges[s].length; t++) {
-            edges[s][t].map(([p1, p2]) => drawEdge(p1, p2, s, t, scale))
+            edges[s][t].map(([p1, p2]) => {
+                const wigglerScalar = wigglerElem.checked ? Math.sin((wiggler - s/2 - t/2) / 10) : 1
+                const scale = wigglerScalar * slider.value
+                drawEdge(p1, p2, s, t, scale)
+            })
         }
     }
     window.requestAnimationFrame(draw)
